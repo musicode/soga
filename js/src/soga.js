@@ -1,2 +1,3 @@
 import fetch from './fetch';
-export { fetch };
+import AjaxUploader from './AjaxUploader';
+export { fetch, AjaxUploader, };

@@ -10,7 +10,8 @@
   },
   "scripts": {
     "doc": "docsify serve docs",
-    "dev": "node_modules/.bin/rollup -c ./build/config.dev.js"
+    "dev": "node_modules/.bin/rollup -c ./build/config.dev.js",
+    "prod": "node_modules/.bin/rollup -c ./build/config.prod.js"
   },
   "repository": {
     "type": "git",

@@ -1,3 +1,3 @@
 import fetch from './fetch';
-export { fetch };
-//# sourceMappingURL=soga.d.ts.map
+import AjaxUploader from './AjaxUploader';
+export { fetch, AjaxUploader, };
