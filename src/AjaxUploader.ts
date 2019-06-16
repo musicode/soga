@@ -10,8 +10,6 @@ export default class AjaxUploader implements type.Uploader {
 
   constructor(file: File, hooks: type.UploadHooks) {
 
-    const instance = this
-
     this.file = file
     this.hooks = hooks
 
@@ -19,28 +17,28 @@ export default class AjaxUploader implements type.Uploader {
 
     xhr.onloadstart = function () {
       if (hooks.onUploadStart) {
-        hooks.onUploadStart(instance)
+        hooks.onUploadStart()
       }
     }
     xhr.onloadend = function () {
       if (hooks.onUploadEnd) {
-        hooks.onUploadEnd(instance)
+        hooks.onUploadEnd()
       }
     }
     xhr.onload = function () {
       if (hooks.onUploadSuccess) {
         const response = parseResponse(xhr)
-        hooks.onUploadSuccess(instance, response())
+        hooks.onUploadSuccess(response())
       }
     }
     xhr.onerror = function () {
       if (hooks.onUploadFailure) {
-        hooks.onUploadFailure(instance)
+        hooks.onUploadFailure()
       }
     }
     xhr.onabort = function () {
       if (hooks.onUploadCancel) {
-        hooks.onUploadCancel(instance)
+        hooks.onUploadCancel()
       }
     }
     xhr.onprogress = function (event) {
@@ -48,14 +46,11 @@ export default class AjaxUploader implements type.Uploader {
         const total = file.size
         const uploaded = Math.min(total, event.loaded)
         const percent = total > 0 ? uploaded / total : 0
-        hooks.onUploadProgress(
-          instance,
-          {
-            uploaded,
-            total,
-            percent
-          }
-        )
+        hooks.onUploadProgress({
+          uploaded,
+          total,
+          percent
+        })
       }
     }
 

@@ -8,9 +8,9 @@ export interface Response {
         entries(): string[][];
     };
     readonly url: string;
-    blob(): Promise<Blob>;
-    json(): Promise<any>;
-    text(): Promise<string>;
+    blob(): Blob;
+    json(): any;
+    text(): string;
     clone(): Response;
 }
 export interface UploadOptions {
@@ -25,12 +25,12 @@ export interface UploadProgress {
     percent: number;
 }
 export interface UploadHooks {
-    onUploadStart?: (uploader: Uploader) => void;
-    onUploadEnd?: (uploader: Uploader) => void;
-    onUploadSuccess?: (uploader: Uploader, response: Response) => void;
-    onUploadFailure?: (uploader: Uploader) => void;
-    onUploadCancel?: (uploader: Uploader) => void;
-    onUploadProgress?: (uploader: Uploader, progress: UploadProgress) => void;
+    onUploadStart?: () => void;
+    onUploadEnd?: () => void;
+    onUploadSuccess?: (response: Response) => void;
+    onUploadFailure?: () => void;
+    onUploadCancel?: () => void;
+    onUploadProgress?: (progress: UploadProgress) => void;
 }
 export interface Uploader {
     file: File;

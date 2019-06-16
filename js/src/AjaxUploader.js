@@ -1,34 +1,33 @@
 import parseResponse from './parseResponse';
 export default class AjaxUploader {
     constructor(file, hooks) {
-        const instance = this;
         this.file = file;
         this.hooks = hooks;
         const xhr = this.xhr = new XMLHttpRequest();
         xhr.onloadstart = function () {
             if (hooks.onUploadStart) {
-                hooks.onUploadStart(instance);
+                hooks.onUploadStart();
             }
         };
         xhr.onloadend = function () {
             if (hooks.onUploadEnd) {
-                hooks.onUploadEnd(instance);
+                hooks.onUploadEnd();
             }
         };
         xhr.onload = function () {
             if (hooks.onUploadSuccess) {
                 const response = parseResponse(xhr);
-                hooks.onUploadSuccess(instance, response());
+                hooks.onUploadSuccess(response());
             }
         };
         xhr.onerror = function () {
             if (hooks.onUploadFailure) {
-                hooks.onUploadFailure(instance);
+                hooks.onUploadFailure();
             }
         };
         xhr.onabort = function () {
             if (hooks.onUploadCancel) {
-                hooks.onUploadCancel(instance);
+                hooks.onUploadCancel();
             }
         };
         xhr.onprogress = function (event) {
@@ -36,7 +35,7 @@ export default class AjaxUploader {
                 const total = file.size;
                 const uploaded = Math.min(total, event.loaded);
                 const percent = total > 0 ? uploaded / total : 0;
-                hooks.onUploadProgress(instance, {
+                hooks.onUploadProgress({
                     uploaded,
                     total,
                     percent

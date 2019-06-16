@@ -1,5 +1,5 @@
 /**
- * soga.js v0.0.1
+ * soga.js v0.0.2
  * (c) 2019-2019 musicode
  * Released under the MIT License.
  */
@@ -30,13 +30,13 @@
                   }
               },
               text: function text() {
-                  return Promise.resolve(xhr.responseText);
+                  return xhr.responseText;
               },
               json: function json() {
-                  return Promise.resolve(JSON.parse(xhr.responseText));
+                  return JSON.parse(xhr.responseText);
               },
               blob: function blob() {
-                  return Promise.resolve(new Blob([xhr.response]));
+                  return new Blob([xhr.response]);
               },
               clone: response,
           };
@@ -79,34 +79,33 @@
   }
 
   var AjaxUploader = function AjaxUploader(file, hooks) {
-      var instance = this;
       this.file = file;
       this.hooks = hooks;
       var xhr = this.xhr = new XMLHttpRequest();
       xhr.onloadstart = function () {
           if (hooks.onUploadStart) {
-              hooks.onUploadStart(instance);
+              hooks.onUploadStart();
           }
       };
       xhr.onloadend = function () {
           if (hooks.onUploadEnd) {
-              hooks.onUploadEnd(instance);
+              hooks.onUploadEnd();
           }
       };
       xhr.onload = function () {
           if (hooks.onUploadSuccess) {
               var response = parseResponse(xhr);
-              hooks.onUploadSuccess(instance, response());
+              hooks.onUploadSuccess(response());
           }
       };
       xhr.onerror = function () {
           if (hooks.onUploadFailure) {
-              hooks.onUploadFailure(instance);
+              hooks.onUploadFailure();
           }
       };
       xhr.onabort = function () {
           if (hooks.onUploadCancel) {
-              hooks.onUploadCancel(instance);
+              hooks.onUploadCancel();
           }
       };
       xhr.onprogress = function (event) {
@@ -114,7 +113,7 @@
               var total = file.size;
               var uploaded = Math.min(total, event.loaded);
               var percent = total > 0 ? uploaded / total : 0;
-              hooks.onUploadProgress(instance, {
+              hooks.onUploadProgress({
                   uploaded: uploaded,
                   total: total,
                   percent: percent
