@@ -25,13 +25,13 @@ export default function (
         }
       },
       text() {
-        return Promise.resolve(xhr.responseText)
+        return xhr.responseText
       },
       json() {
-        return Promise.resolve(JSON.parse(xhr.responseText))
+        return JSON.parse(xhr.responseText)
       },
       blob() {
-        return Promise.resolve(new Blob([xhr.response]))
+        return new Blob([xhr.response])
       },
       clone: response,
     }
