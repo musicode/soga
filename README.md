@@ -1,2 +1,3 @@
-# soga
-guess
+# Soga
+
+request library for javascript application.
