@@ -47,12 +47,12 @@ if (!AjaxUploader.support()) {
 }
 
 const uploader = new AjaxUploader(file, {
-  onUploadStart?: () => void
-  onUploadEnd?: () => void
-  onUploadError?: () => void
-  onUploadCancel?: () => void
-  onUploadProgress?: (progress: UploadProgress) => void
-  onUploadSuccess?: (response: Response) => void
+  onStart?: () => void
+  onEnd?: () => void
+  onError?: () => void
+  onAbort?: () => void
+  onProgress?: (progress: UploadProgress) => void
+  onSuccess?: (response: Response) => void
 })
 
 uploader.upload({

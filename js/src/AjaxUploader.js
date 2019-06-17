@@ -15,13 +15,13 @@ export default class AjaxUploader {
         instance.fileSize = file.size || 0;
         const xhr = instance.xhr = new XMLHttpRequest();
         xhr.onloadstart = function () {
-            if (hooks.onUploadStart) {
-                hooks.onUploadStart();
+            if (hooks.onStart) {
+                hooks.onStart();
             }
         };
         xhr.onloadend = function () {
-            if (hooks.onUploadEnd) {
-                hooks.onUploadEnd();
+            if (hooks.onEnd) {
+                hooks.onEnd();
             }
         };
         xhr.onload = function () {
@@ -29,8 +29,8 @@ export default class AjaxUploader {
             if (chunkInfo) {
                 if (chunkInfo.uploaded < fileSize) {
                     chunkInfo.uploaded += chunkInfo.uploading;
-                    if (hooks.onUploadChunkSuccess) {
-                        hooks.onUploadChunkSuccess({
+                    if (hooks.onChunkSuccess) {
+                        hooks.onChunkSuccess({
                             chunkIndex: chunkInfo.options.chunkIndex
                         });
                     }
@@ -42,19 +42,19 @@ export default class AjaxUploader {
                     }
                 }
             }
-            if (hooks.onUploadSuccess) {
+            if (hooks.onSuccess) {
                 const response = parseResponse(xhr);
-                hooks.onUploadSuccess(response());
+                hooks.onSuccess(response());
             }
         };
         xhr.onerror = function () {
-            if (hooks.onUploadError) {
-                hooks.onUploadError();
+            if (hooks.onError) {
+                hooks.onError();
             }
         };
         xhr.onabort = function () {
-            if (hooks.onUploadCancel) {
-                hooks.onUploadCancel();
+            if (hooks.onAbort) {
+                hooks.onAbort();
             }
         };
         // 下载文件触发的是 xhr.onprogress
@@ -67,8 +67,8 @@ export default class AjaxUploader {
                 const chunkTotal = chunkInfo.uploading;
                 // 不能比当前正在上传的 size 还大
                 const chunkUploaded = Math.min(chunkTotal, event.loaded);
-                if (hooks.onUploadChunkProgress) {
-                    hooks.onUploadChunkProgress({
+                if (hooks.onChunkProgress) {
+                    hooks.onChunkProgress({
                         chunkIndex: chunkInfo.options.chunkIndex,
                         uploaded: chunkUploaded,
                         total: chunkTotal,
@@ -83,8 +83,8 @@ export default class AjaxUploader {
                 // 不能比文件 size 还大
                 uploaded = Math.min(fileSize, event.loaded);
             }
-            if (hooks.onUploadProgress) {
-                hooks.onUploadProgress({
+            if (hooks.onProgress) {
+                hooks.onProgress({
                     uploaded,
                     total: fileSize,
                     // 怕浏览器有 bug 导致 fileSize 为 0

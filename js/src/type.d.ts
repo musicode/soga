@@ -45,14 +45,14 @@ export interface ChunkInfo {
     options: UploadChunkOptions;
 }
 export interface UploadHooks {
-    onUploadStart?: () => void;
-    onUploadEnd?: () => void;
-    onUploadError?: () => void;
-    onUploadCancel?: () => void;
-    onUploadProgress?: (progress: UploadProgress) => void;
-    onUploadSuccess?: (response: Response) => void;
-    onUploadChunkProgress?: (progress: UploadChunkProgress) => void;
-    onUploadChunkSuccess?: (success: UploadChunkSuccess) => void;
+    onStart?: () => void;
+    onEnd?: () => void;
+    onError?: () => void;
+    onAbort?: () => void;
+    onProgress?: (progress: UploadProgress) => void;
+    onSuccess?: (response: Response) => void;
+    onChunkProgress?: (progress: UploadChunkProgress) => void;
+    onChunkSuccess?: (success: UploadChunkSuccess) => void;
 }
 export interface Uploader {
     file: File;
