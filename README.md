@@ -36,7 +36,7 @@ fetch(
 
 ## File Uploader
 
-文件上传
+文件上传，兼容 IE10+
 
 ```js
 import { AjaxUploader } from 'soga'
