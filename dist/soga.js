@@ -1,5 +1,5 @@
 /**
- * soga.js v0.0.4
+ * soga.js v0.0.5
  * (c) 2019-2019 musicode
  * Released under the MIT License.
  */
@@ -126,8 +126,8 @@
           }
       };
       xhr.onerror = function () {
-          if (hooks.onUploadFailure) {
-              hooks.onUploadFailure();
+          if (hooks.onUploadError) {
+              hooks.onUploadError();
           }
       };
       xhr.onabort = function () {

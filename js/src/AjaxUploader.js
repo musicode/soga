@@ -48,8 +48,8 @@ export default class AjaxUploader {
             }
         };
         xhr.onerror = function () {
-            if (hooks.onUploadFailure) {
-                hooks.onUploadFailure();
+            if (hooks.onUploadError) {
+                hooks.onUploadError();
             }
         };
         xhr.onabort = function () {

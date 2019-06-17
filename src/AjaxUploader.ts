@@ -73,8 +73,8 @@ export default class AjaxUploader implements type.Uploader {
 
     }
     xhr.onerror = function () {
-      if (hooks.onUploadFailure) {
-        hooks.onUploadFailure()
+      if (hooks.onUploadError) {
+        hooks.onUploadError()
       }
     }
     xhr.onabort = function () {

@@ -55,7 +55,7 @@ export interface ChunkInfo {
 export interface UploadHooks {
   onUploadStart?: () => void
   onUploadEnd?: () => void
-  onUploadFailure?: () => void
+  onUploadError?: () => void
   onUploadCancel?: () => void
 
   onUploadProgress?: (progress: UploadProgress) => void
