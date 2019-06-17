@@ -17,8 +17,15 @@ export interface Response {
 
 export interface UploadOptions {
   data?: Record<string, any>
-  header?: Record<string, string>
+  headers?: HeadersInit
   fileName: string
+  action: string
+}
+
+export interface UploadChunkOptions {
+  headers?: HeadersInit
+  chunkIndex: number
+  chunkSize: number
   action: string
 }
 
@@ -28,13 +35,34 @@ export interface UploadProgress {
   percent: number
 }
 
+export interface UploadChunkProgress {
+  chunkIndex: number
+  uploaded: number
+  total: number
+  percent: number
+}
+
+export interface UploadChunkSuccess {
+  chunkIndex: number
+}
+
+export interface ChunkInfo {
+  uploaded: number
+  uploading: number
+  options: UploadChunkOptions
+}
+
 export interface UploadHooks {
   onUploadStart?: () => void
   onUploadEnd?: () => void
-  onUploadSuccess?: (response: Response) => void
   onUploadFailure?: () => void
   onUploadCancel?: () => void
+
   onUploadProgress?: (progress: UploadProgress) => void
+  onUploadSuccess?: (response: Response) => void
+
+  onUploadChunkProgress?: (progress: UploadChunkProgress) => void
+  onUploadChunkSuccess?: (success: UploadChunkSuccess) => void
 }
 
 export interface Uploader {

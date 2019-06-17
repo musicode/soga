@@ -1,6 +1,6 @@
 {
   "name": "soga",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A request library",
   "main": "dist/soga.js",
   "types": "js/src/soga.d.ts",

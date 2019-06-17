@@ -1,4 +1,5 @@
 import parseResponse from './parseResponse';
+import setRequestHeaders from './setRequestHeaders';
 export default function (url, options = {}) {
     return new Promise(function (resolve, reject) {
         const xhr = new XMLHttpRequest();
@@ -9,9 +10,7 @@ export default function (url, options = {}) {
         };
         xhr.onerror = reject;
         xhr.withCredentials = options.credentials === 'include';
-        for (let key in options.headers) {
-            xhr.setRequestHeader(key, options.headers[key]);
-        }
+        setRequestHeaders(xhr, options.headers);
         xhr.send(options.body || null);
     });
 }
