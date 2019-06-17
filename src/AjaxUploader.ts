@@ -29,21 +29,21 @@ export default class AjaxUploader implements type.Uploader {
 
     // 碰到过传了几个分片之后，file.size 变成 0 的情况
     // 因此先存一下最初的 fileSize
-    instance.fileSize = file.size
+    instance.fileSize = file.size || 0
 
     const xhr = instance.xhr = new XMLHttpRequest()
 
-    xhr.upload.onloadstart = function () {
+    xhr.onloadstart = function () {
       if (hooks.onUploadStart) {
         hooks.onUploadStart()
       }
     }
-    xhr.upload.onloadend = function () {
+    xhr.onloadend = function () {
       if (hooks.onUploadEnd) {
         hooks.onUploadEnd()
       }
     }
-    xhr.upload.onload = function () {
+    xhr.onload = function () {
 
       const { fileSize, chunkInfo } = instance
 
@@ -72,16 +72,17 @@ export default class AjaxUploader implements type.Uploader {
       }
 
     }
-    xhr.upload.onerror = function () {
+    xhr.onerror = function () {
       if (hooks.onUploadFailure) {
         hooks.onUploadFailure()
       }
     }
-    xhr.upload.onabort = function () {
+    xhr.onabort = function () {
       if (hooks.onUploadCancel) {
         hooks.onUploadCancel()
       }
     }
+    // 下载文件触发的是 xhr.onprogress
     xhr.upload.onprogress = function (event) {
 
       const { fileSize, chunkInfo } = instance
@@ -133,7 +134,7 @@ export default class AjaxUploader implements type.Uploader {
 
     const { xhr, file } = this
 
-    setRequestHeaders(xhr, options.headers)
+    xhr.open('post', options.action, true)
 
     const formData = new FormData()
 
@@ -143,7 +144,8 @@ export default class AjaxUploader implements type.Uploader {
 
     formData.append(options.fileName, file)
 
-    xhr.open('post', options.action, true)
+    setRequestHeaders(xhr, options.headers)
+
     xhr.send(formData)
 
   }
@@ -176,19 +178,22 @@ export default class AjaxUploader implements type.Uploader {
 
     chunkInfo.uploading = end - start
 
-    setRequestHeaders(
-      xhr,
-      {
-        Range: `bytes ${start}-${end}/${fileSize}`
-      }
-    )
-
-    setRequestHeaders(
-      xhr,
-      options.headers
-    )
-
     xhr.open('post', options.action, true)
+
+    // xhr.setRequestHeader 必须在 open() 方法之后，send() 方法之前调用，否则会报错
+
+    // xhr.setRequestHeader 设置相同的请求头不会覆盖，而是会追加，如 key: value1, value2
+    // 这里改成覆盖
+    const headers = {
+      Range: `bytes ${start}-${end}/${fileSize}`
+    }
+
+    for (let key in options.headers) {
+      headers[key] = options.headers[key]
+    }
+
+    setRequestHeaders(xhr, headers)
+
     xhr.send(blobSlice.call(file, start, end))
 
   }

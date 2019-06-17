@@ -1,5 +1,5 @@
 /**
- * soga.js v0.0.3
+ * soga.js v0.0.4
  * (c) 2019-2019 musicode
  * Released under the MIT License.
  */
@@ -89,19 +89,19 @@
       instance.hooks = hooks;
       // 碰到过传了几个分片之后，file.size 变成 0 的情况
       // 因此先存一下最初的 fileSize
-      instance.fileSize = file.size;
+      instance.fileSize = file.size || 0;
       var xhr = instance.xhr = new XMLHttpRequest();
-      xhr.upload.onloadstart = function () {
+      xhr.onloadstart = function () {
           if (hooks.onUploadStart) {
               hooks.onUploadStart();
           }
       };
-      xhr.upload.onloadend = function () {
+      xhr.onloadend = function () {
           if (hooks.onUploadEnd) {
               hooks.onUploadEnd();
           }
       };
-      xhr.upload.onload = function () {
+      xhr.onload = function () {
           var fileSize = instance.fileSize;
           var chunkInfo = instance.chunkInfo;
           if (chunkInfo) {
@@ -125,16 +125,17 @@
               hooks.onUploadSuccess(response());
           }
       };
-      xhr.upload.onerror = function () {
+      xhr.onerror = function () {
           if (hooks.onUploadFailure) {
               hooks.onUploadFailure();
           }
       };
-      xhr.upload.onabort = function () {
+      xhr.onabort = function () {
           if (hooks.onUploadCancel) {
               hooks.onUploadCancel();
           }
       };
+      // 下载文件触发的是 xhr.onprogress
       xhr.upload.onprogress = function (event) {
           var fileSize = instance.fileSize;
           var chunkInfo = instance.chunkInfo;
@@ -182,13 +183,13 @@
       var ref = this;
           var xhr = ref.xhr;
           var file = ref.file;
-      setRequestHeaders(xhr, options.headers);
+      xhr.open('post', options.action, true);
       var formData = new FormData();
       for (var key in options.data) {
           formData.append(key, options.data[key]);
       }
       formData.append(options.fileName, file);
-      xhr.open('post', options.action, true);
+      setRequestHeaders(xhr, options.headers);
       xhr.send(formData);
   };
   /**
@@ -217,11 +218,17 @@
       var start = chunkSize * chunkIndex;
       var end = Math.min(fileSize, chunkSize * (chunkIndex + 1));
       chunkInfo.uploading = end - start;
-      setRequestHeaders(xhr, {
-          Range: ("bytes " + start + "-" + end + "/" + fileSize)
-      });
-      setRequestHeaders(xhr, options.headers);
       xhr.open('post', options.action, true);
+      // xhr.setRequestHeader 必须在 open() 方法之后，send() 方法之前调用，否则会报错
+      // xhr.setRequestHeader 设置相同的请求头不会覆盖，而是会追加，如 key: value1, value2
+      // 这里改成覆盖
+      var headers = {
+          Range: ("bytes " + start + "-" + end + "/" + fileSize)
+      };
+      for (var key in options.headers) {
+          headers[key] = options.headers[key];
+      }
+      setRequestHeaders(xhr, headers);
       xhr.send(blobSlice.call(file, start, end));
   };
 
