@@ -1,5 +1,5 @@
-import parseResponse from './parseResponse';
-import setRequestHeaders from './setRequestHeaders';
+import parseResponse from './function/parseResponse';
+import setRequestHeaders from './function/setRequestHeaders';
 const blobSlice = File.prototype['mozSlice'] || File.prototype['webkitSlice'] || File.prototype.slice;
 export default class AjaxUploader {
     static support() {

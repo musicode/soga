@@ -1,5 +1,5 @@
-import parseResponse from './parseResponse';
-import setRequestHeaders from './setRequestHeaders';
+import parseResponse from './function/parseResponse';
+import setRequestHeaders from './function/setRequestHeaders';
 export default function (url, options = {}) {
     return new Promise(function (resolve, reject) {
         const xhr = new XMLHttpRequest();
