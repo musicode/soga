@@ -58,6 +58,7 @@ export default class AjaxUploader {
             }
         };
         // 下载文件触发的是 xhr.onprogress
+        // 上传文件触发的是 xhr.upload.onprogress
         xhr.upload.onprogress = function (event) {
             const { fileSize, chunkInfo } = instance;
             let uploaded;
@@ -130,7 +131,7 @@ export default class AjaxUploader {
         chunkInfo.uploading = end - start;
         xhr.open('post', options.action, true);
         // xhr.setRequestHeader 必须在 open() 方法之后，send() 方法之前调用，否则会报错
-        // xhr.setRequestHeader 设置相同的请求头不会覆盖，而是会追加，如 key: value1, value2
+        // xhr.setRequestHeader 设置相同的请求头不会覆盖，而是追加，如 key: value1, value2
         // 这里改成覆盖
         const headers = {
             Range: `bytes ${start}-${end}/${fileSize}`
@@ -140,5 +141,8 @@ export default class AjaxUploader {
         }
         setRequestHeaders(xhr, headers);
         xhr.send(blobSlice.call(file, start, end));
+    }
+    abort() {
+        this.xhr.abort();
     }
 }

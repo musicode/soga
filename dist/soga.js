@@ -1,5 +1,5 @@
 /**
- * soga.js v0.0.5
+ * soga.js v0.0.6
  * (c) 2019-2019 musicode
  * Released under the MIT License.
  */
@@ -10,25 +10,22 @@
   (global = global || self, factory(global.Soga = {}));
 }(this, function (exports) { 'use strict';
 
-  function createResponse (xhr, keys, values, entries) {
+  function createResponse (xhr, headers) {
       function response() {
           return {
-              // 200-299
-              ok: (xhr.status / 100 | 0) == 2,
-              statusText: xhr.statusText,
-              status: xhr.status,
-              url: xhr.responseURL,
+              ok: xhr.status >= 200 && xhr.status < 300,
+              statusText: xhr.statusText || 'OK',
+              status: xhr.status || 200,
+              url: xhr.responseURL || headers['x-request-url'] || '',
               headers: {
-                  keys: function keys$1() {
-                      return keys;
+                  get: function get(name) {
+                      return headers[name.toLowerCase()];
                   },
-                  values: function values$1() {
-                      return values;
-                  },
-                  entries: function entries$1() {
-                      return entries;
+                  has: function has(name) {
+                      return name.toLowerCase() in headers;
                   }
               },
+              body: xhr.response || xhr.responseText,
               text: function text() {
                   return xhr.responseText;
               },
@@ -45,18 +42,13 @@
   }
 
   function parseResponse (xhr) {
-      var keys = [];
-      var values = [];
-      var entries = [];
-      xhr
-          .getAllResponseHeaders()
-          .replace(/^(.*?):[^\S\n]*([\s\S]*?)$/gm, function (match, key, value) {
-          keys.push(key = key.toLowerCase());
-          values.push(value);
-          entries.push([key, value]);
+      var headers = {};
+      var rawHeaders = xhr.getAllResponseHeaders() || '';
+      rawHeaders.replace(/^(.*?):[^\S\n]*([\s\S]*?)$/gm, function (match, key, value) {
+          headers[key.toLowerCase()] = value;
           return match;
       });
-      return createResponse(xhr, keys, values, entries);
+      return createResponse(xhr, headers);
   }
 
   function setRequestHeaders (xhr, headers) {
@@ -76,7 +68,23 @@
               resolve(response());
           };
           xhr.onerror = reject;
-          xhr.withCredentials = options.credentials === 'include';
+          /**
+           * The credentials indicates whether the user agent should send cookies
+           * from the other domain in the case of cross-origin requests.
+           *
+           * omit: Never send or receive cookies
+           *
+           * include: Always send user credentials (cookies, basic http auth, etc..), even for cross-origin calls
+           *
+           * same-origin: Send user credentials (cookies, basic http auth, etc..) if the URL is on the same origin as the calling script.
+           *              This is the default value.
+           */
+          if (options.credentials === 'include') {
+              xhr.withCredentials = true;
+          }
+          else if (options.credentials === 'omit') {
+              xhr.withCredentials = false;
+          }
           setRequestHeaders(xhr, options.headers);
           xhr.send(options.body || null);
       });
@@ -136,6 +144,7 @@
           }
       };
       // 下载文件触发的是 xhr.onprogress
+      // 上传文件触发的是 xhr.upload.onprogress
       xhr.upload.onprogress = function (event) {
           var fileSize = instance.fileSize;
           var chunkInfo = instance.chunkInfo;
@@ -220,7 +229,7 @@
       chunkInfo.uploading = end - start;
       xhr.open('post', options.action, true);
       // xhr.setRequestHeader 必须在 open() 方法之后，send() 方法之前调用，否则会报错
-      // xhr.setRequestHeader 设置相同的请求头不会覆盖，而是会追加，如 key: value1, value2
+      // xhr.setRequestHeader 设置相同的请求头不会覆盖，而是追加，如 key: value1, value2
       // 这里改成覆盖
       var headers = {
           Range: ("bytes " + start + "-" + end + "/" + fileSize)
@@ -230,6 +239,9 @@
       }
       setRequestHeaders(xhr, headers);
       xhr.send(blobSlice.call(file, start, end));
+  };
+  AjaxUploader.prototype.abort = function abort () {
+      this.xhr.abort();
   };
 
   exports.AjaxUploader = AjaxUploader;

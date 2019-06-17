@@ -83,6 +83,7 @@ export default class AjaxUploader implements type.Uploader {
       }
     }
     // 下载文件触发的是 xhr.onprogress
+    // 上传文件触发的是 xhr.upload.onprogress
     xhr.upload.onprogress = function (event) {
 
       const { fileSize, chunkInfo } = instance
@@ -170,6 +171,7 @@ export default class AjaxUploader implements type.Uploader {
 
     // 默认从第一个分片开始上传，断点续传可以传入指定的分片
     const chunkIndex = options.chunkIndex || 0
+
     // 默认一个分片为 4M
     const chunkSize = options.chunkSize || 4 * 1024 * 1024
 
@@ -182,7 +184,7 @@ export default class AjaxUploader implements type.Uploader {
 
     // xhr.setRequestHeader 必须在 open() 方法之后，send() 方法之前调用，否则会报错
 
-    // xhr.setRequestHeader 设置相同的请求头不会覆盖，而是会追加，如 key: value1, value2
+    // xhr.setRequestHeader 设置相同的请求头不会覆盖，而是追加，如 key: value1, value2
     // 这里改成覆盖
     const headers = {
       Range: `bytes ${start}-${end}/${fileSize}`
@@ -196,6 +198,10 @@ export default class AjaxUploader implements type.Uploader {
 
     xhr.send(blobSlice.call(file, start, end))
 
+  }
+
+  abort() {
+    this.xhr.abort()
   }
 
 }

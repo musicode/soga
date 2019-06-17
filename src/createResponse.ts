@@ -2,28 +2,23 @@ import * as type from './type'
 
 export default function (
   xhr: XMLHttpRequest,
-  keys: string[],
-  values: string[],
-  entries: string[][]
+  headers: Record<string, string>
 ) {
   function response(): type.Response {
     return {
-      // 200-299
-      ok: (xhr.status / 100 | 0) == 2,
-      statusText: xhr.statusText,
-      status: xhr.status,
-      url: xhr.responseURL,
+      ok: xhr.status >= 200 && xhr.status < 300,
+      statusText: xhr.statusText || 'OK',
+      status: xhr.status || 200,
+      url: xhr.responseURL || headers['x-request-url'] || '',
       headers: {
-        keys() {
-          return keys
+        get(name: string) {
+          return headers[name.toLowerCase()]
         },
-        values() {
-          return values
-        },
-        entries() {
-          return entries
+        has(name: string) {
+          return name.toLowerCase() in headers
         }
       },
+      body: xhr.response || xhr.responseText,
       text() {
         return xhr.responseText
       },

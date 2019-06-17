@@ -9,7 +9,23 @@ export default function (url, options = {}) {
             resolve(response());
         };
         xhr.onerror = reject;
-        xhr.withCredentials = options.credentials === 'include';
+        /**
+         * The credentials indicates whether the user agent should send cookies
+         * from the other domain in the case of cross-origin requests.
+         *
+         * omit: Never send or receive cookies
+         *
+         * include: Always send user credentials (cookies, basic http auth, etc..), even for cross-origin calls
+         *
+         * same-origin: Send user credentials (cookies, basic http auth, etc..) if the URL is on the same origin as the calling script.
+         *              This is the default value.
+         */
+        if (options.credentials === 'include') {
+            xhr.withCredentials = true;
+        }
+        else if (options.credentials === 'omit') {
+            xhr.withCredentials = false;
+        }
         setRequestHeaders(xhr, options.headers);
         xhr.send(options.body || null);
     });

@@ -2,12 +2,12 @@ export interface Response {
     readonly ok: boolean;
     readonly status: number;
     readonly statusText: string;
-    readonly headers: {
-        keys(): string[];
-        values(): string[];
-        entries(): string[][];
-    };
     readonly url: string;
+    readonly headers: {
+        get(name: string): string | void;
+        has(name: string): boolean;
+    };
+    readonly body: any;
     blob(): Blob;
     json(): any;
     text(): string;
@@ -56,6 +56,7 @@ export interface UploadHooks {
 }
 export interface Uploader {
     file: File;
+    fileSize: number;
     hooks: UploadHooks;
     upload(options: UploadOptions): void;
 }
