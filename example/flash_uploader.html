@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="xx"></div>
+  <script src="../dist/soga.js"></script>
+  <script>
+    var flashUploader = new Soga.FlashUploader(
+      {
+        el: document.getElementById('xx'),
+        swfUrl: '../dist/uploader.swf',
+        accept: 'jpg,png',
+        multiple: false,
+        debug: true
+      },
+      {
+        onFileChange: function () {
+          console.log('onFileChange')
+        },
+        onStart: function (file) {
+          console.log('onStart', file)
+        },
+        onEnd: function (file) {
+          console.log('onEnd', file)
+        },
+        onAbort: function (file) {
+          console.log('onAbort', file)
+        },
+        onProgress: function (file, progress) {
+          console.log('onProgress', file, progress)
+        },
+        onSuccess: function (file, responseText) {
+          console.log('onSuccess', file, responseText)
+        },
+        onError: function (file, code, detail) {
+          switch (code) {
+            case Soga.FlashUploader.ERROR_SECURITY:
+              console.log('安全沙箱错误')
+              break
+            case Soga.FlashUploader.ERROR_IO:
+              console.log('IO 错误')
+              break
+          }
+          console.log('onError', file, code, detail)
+        }
+      }
+    )
+
+    function upload() {
+      flashUploader.upload(0, {
+        action: 'xxx',
+        fileName: 'file'
+      })
+    }
+  </script>
+</body>
+</html>

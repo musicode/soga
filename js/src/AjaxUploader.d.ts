@@ -15,5 +15,12 @@ export default class AjaxUploader implements type.Uploader {
      * 上传文件分片
      */
     uploadChunk(options: type.UploadChunkOptions): void;
+    /**
+     * 取消上传
+     */
     abort(): void;
+    /**
+     * 销毁
+     */
+    destroy(): void;
 }

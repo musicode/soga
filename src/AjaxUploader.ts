@@ -207,6 +207,9 @@ export default class AjaxUploader implements type.Uploader {
     this.xhr.abort()
   }
 
+  /**
+   * 销毁
+   */
   destroy() {
     this.abort()
   }

@@ -1,9 +1,9 @@
 import fetch from './fetch'
 import AjaxUploader from './AjaxUploader'
-import Supload from './supload/Supload'
+import FlashUploader from './FlashUploader'
 
 export {
   fetch,
-  Supload,
   AjaxUploader,
+  FlashUploader,
 }

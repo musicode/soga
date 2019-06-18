@@ -1,5 +1,5 @@
 /**
- * soga.js v0.0.8
+ * soga.js v0.0.9
  * (c) 2019-2019 musicode
  * Released under the MIT License.
  */
@@ -246,8 +246,14 @@
   AjaxUploader.prototype.abort = function abort () {
       this.xhr.abort();
   };
+  /**
+   * 销毁
+   */
+  AjaxUploader.prototype.destroy = function destroy () {
+      this.abort();
+  };
 
-  var Supload = function Supload(options, hooks) {
+  var FlashUploader = function FlashUploader(options, hooks) {
       if ( hooks === void 0 ) hooks = {};
 
       var movieName = createMovieName();
@@ -263,48 +269,52 @@
       this.movieName = movieName;
       this.hooks = hooks;
       this.debug = !!options.debug;
-      Supload.instances[movieName] = this;
+      FlashUploader.instances[movieName] = this;
   };
   /**
    * 获得要上传的文件
    */
-  Supload.prototype.getFiles = function getFiles () {
+  FlashUploader.prototype.getFiles = function getFiles () {
       return this.swf['getFiles']();
   };
   /**
    * 上传
    */
-  Supload.prototype.upload = function upload (index, options) {
+  FlashUploader.prototype.upload = function upload (index, options) {
       this.swf['upload'](index, options.action, options.fileName, options.data, options.headers);
   };
   /**
    * 取消上传
    */
-  Supload.prototype.abort = function abort (index) {
+  FlashUploader.prototype.abort = function abort (index) {
       this.swf['abort'](index);
   };
   /**
    * 启用鼠标点击打开文件选择窗口
    */
-  Supload.prototype.enable = function enable () {
+  FlashUploader.prototype.enable = function enable () {
       this.swf['enable']();
   };
   /**
    * 禁用鼠标点击打开文件选择窗口
    */
-  Supload.prototype.disable = function disable () {
+  FlashUploader.prototype.disable = function disable () {
       this.swf['disable']();
   };
   /**
    * 销毁对象
    */
-  Supload.prototype.destroy = function destroy () {
+  FlashUploader.prototype.destroy = function destroy () {
+      var files = this.getFiles();
+      for (var i = 0, len = files.length; i < len; i++) {
+          this.abort(files[i].index);
+      }
       this.swf['destroy']();
-      Supload.instances[this.movieName] = null;
+      FlashUploader.instances[this.movieName] = null;
       // 清除 IE 引用
       window[this.movieName] = null;
   };
-  Supload.prototype.onReady = function onReady () {
+  FlashUploader.prototype.onReady = function onReady () {
       // swf 文件初始化成功
       var ref = this.hooks;
           var onReady = ref.onReady;
@@ -312,7 +322,7 @@
           onReady();
       }
   };
-  Supload.prototype.onFileChange = function onFileChange () {
+  FlashUploader.prototype.onFileChange = function onFileChange () {
       // 用户选择文件
       var ref = this.hooks;
           var onFileChange = ref.onFileChange;
@@ -320,35 +330,35 @@
           onFileChange();
       }
   };
-  Supload.prototype.onStart = function onStart (data) {
+  FlashUploader.prototype.onStart = function onStart (data) {
       var ref = this.hooks;
           var onStart = ref.onStart;
       if (onStart) {
           onStart(data.file);
       }
   };
-  Supload.prototype.onEnd = function onEnd (data) {
+  FlashUploader.prototype.onEnd = function onEnd (data) {
       var ref = this.hooks;
           var onEnd = ref.onEnd;
       if (onEnd) {
           onEnd(data.file);
       }
   };
-  Supload.prototype.onError = function onError (data) {
+  FlashUploader.prototype.onError = function onError (data) {
       var ref = this.hooks;
           var onError = ref.onError;
       if (onError) {
           onError(data.file, data.code, data.detail);
       }
   };
-  Supload.prototype.onAbort = function onAbort (data) {
+  FlashUploader.prototype.onAbort = function onAbort (data) {
       var ref = this.hooks;
           var onAbort = ref.onAbort;
       if (onAbort) {
           onAbort(data.file);
       }
   };
-  Supload.prototype.onProgress = function onProgress (data) {
+  FlashUploader.prototype.onProgress = function onProgress (data) {
       var ref = this.hooks;
           var onProgress = ref.onProgress;
       if (onProgress) {
@@ -362,55 +372,55 @@
           });
       }
   };
-  Supload.prototype.onSuccess = function onSuccess (data) {
+  FlashUploader.prototype.onSuccess = function onSuccess (data) {
       var ref = this.hooks;
           var onSuccess = ref.onSuccess;
       if (onSuccess) {
           onSuccess(data.file, data.responseText);
       }
   };
-  Supload.prototype.onDebug = function onDebug (data) {
+  FlashUploader.prototype.onDebug = function onDebug (data) {
       if (this.debug) {
           console.log(data.text);
       }
   };
-  Supload.instances = {};
+  FlashUploader.instances = {};
   /**
    * 文件状态 - 等待上传
    */
-  Supload.STATUS_WAITING = 0;
+  FlashUploader.STATUS_WAITING = 0;
   /**
    * 文件状态 - 正在上传
    */
-  Supload.STATUS_UPLOADING = 1;
+  FlashUploader.STATUS_UPLOADING = 1;
   /**
    * 文件状态 - 上传成功
    */
-  Supload.STATUS_UPLOAD_SUCCESS = 2;
+  FlashUploader.STATUS_UPLOAD_SUCCESS = 2;
   /**
    * 文件状态 - 上传失败
    */
-  Supload.STATUS_UPLOAD_ERROR = 3;
+  FlashUploader.STATUS_UPLOAD_ERROR = 3;
   /**
-   * 错误码 - 上传中止
+   * 文件状态 - 上传中止
    */
-  Supload.ERROR_ABORT = 0;
+  FlashUploader.STATUS_UPLOAD_ABORT = 4;
   /**
    * 错误码 - 上传出现沙箱安全错误
    */
-  Supload.ERROR_SECURITY = 1;
+  FlashUploader.ERROR_SECURITY = 0;
   /**
    * 错误码 - 上传 IO 错误
    */
-  Supload.ERROR_IO = 2;
+  FlashUploader.ERROR_IO = 1;
   /**
    * 项目名称 AS 会用 projectName.instances[movieName] 找出当前实例
    */
-  var projectName = 'Supload';
+  var projectName = 'Soga_Flash_Uploader';
   /**
    * 暴露给全局的对象，这样 AS 才能调到
    */
-  window[projectName] = Supload;
+  window[projectName] = FlashUploader;
   /**
    * guid 初始值
    */
@@ -419,7 +429,7 @@
    * 创建新的唯一的影片剪辑名称
    */
   function createMovieName() {
-      return '_supload_' + (guid++);
+      return projectName + (guid++);
   }
   /**
    * 创建 swf 元素
@@ -459,7 +469,7 @@
   }
 
   exports.AjaxUploader = AjaxUploader;
-  exports.Supload = Supload;
+  exports.FlashUploader = FlashUploader;
   exports.fetch = fetch;
 
   Object.defineProperty(exports, '__esModule', { value: true });

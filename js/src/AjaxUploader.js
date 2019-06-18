@@ -142,7 +142,16 @@ export default class AjaxUploader {
         setRequestHeaders(xhr, headers);
         xhr.send(blobSlice.call(file, start, end));
     }
+    /**
+     * 取消上传
+     */
     abort() {
         this.xhr.abort();
+    }
+    /**
+     * 销毁
+     */
+    destroy() {
+        this.abort();
     }
 }
