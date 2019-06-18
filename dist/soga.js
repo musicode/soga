@@ -240,11 +240,226 @@
       setRequestHeaders(xhr, headers);
       xhr.send(blobSlice.call(file, start, end));
   };
+  /**
+   * 取消上传
+   */
   AjaxUploader.prototype.abort = function abort () {
       this.xhr.abort();
   };
 
+  var Supload = function Supload(options, hooks) {
+      if ( hooks === void 0 ) hooks = {};
+
+      var movieName = createMovieName();
+      var swf = createSWF(movieName, options.swfUrl, createFlashVars(movieName, options.accept || '', options.multiple || false));
+      var el = options.el;
+      if (el.parentNode) {
+          el.parentNode.replaceChild(swf, el);
+      }
+      else {
+          throw new Error('el.parentNode is not found.');
+      }
+      this.swf = swf;
+      this.movieName = movieName;
+      this.hooks = hooks;
+      this.debug = !!options.debug;
+      Supload.instances[movieName] = this;
+  };
+  /**
+   * 获得要上传的文件
+   */
+  Supload.prototype.getFiles = function getFiles () {
+      return this.swf['getFiles']();
+  };
+  /**
+   * 上传
+   */
+  Supload.prototype.upload = function upload (index, options) {
+      this.swf['upload'](index, options.action, options.fileName, options.data, options.headers);
+  };
+  /**
+   * 取消上传
+   */
+  Supload.prototype.abort = function abort (index) {
+      this.swf['abort'](index);
+  };
+  /**
+   * 启用鼠标点击打开文件选择窗口
+   */
+  Supload.prototype.enable = function enable () {
+      this.swf['enable']();
+  };
+  /**
+   * 禁用鼠标点击打开文件选择窗口
+   */
+  Supload.prototype.disable = function disable () {
+      this.swf['disable']();
+  };
+  /**
+   * 销毁对象
+   */
+  Supload.prototype.destroy = function destroy () {
+      this.swf['destroy']();
+      Supload.instances[this.movieName] = null;
+      // 清除 IE 引用
+      window[this.movieName] = null;
+  };
+  Supload.prototype.onReady = function onReady () {
+      // swf 文件初始化成功
+      var ref = this.hooks;
+          var onReady = ref.onReady;
+      if (onReady) {
+          onReady();
+      }
+  };
+  Supload.prototype.onFileChange = function onFileChange () {
+      // 用户选择文件
+      var ref = this.hooks;
+          var onFileChange = ref.onFileChange;
+      if (onFileChange) {
+          onFileChange();
+      }
+  };
+  Supload.prototype.onStart = function onStart (data) {
+      var ref = this.hooks;
+          var onStart = ref.onStart;
+      if (onStart) {
+          onStart(data.file);
+      }
+  };
+  Supload.prototype.onEnd = function onEnd (data) {
+      var ref = this.hooks;
+          var onEnd = ref.onEnd;
+      if (onEnd) {
+          onEnd(data.file);
+      }
+  };
+  Supload.prototype.onError = function onError (data) {
+      var ref = this.hooks;
+          var onError = ref.onError;
+      if (onError) {
+          onError(data.file, data.code, data.detail);
+      }
+  };
+  Supload.prototype.onAbort = function onAbort (data) {
+      var ref = this.hooks;
+          var onAbort = ref.onAbort;
+      if (onAbort) {
+          onAbort(data.file);
+      }
+  };
+  Supload.prototype.onProgress = function onProgress (data) {
+      var ref = this.hooks;
+          var onProgress = ref.onProgress;
+      if (onProgress) {
+          var file = data.file;
+              var uploaded = data.uploaded;
+              var total = data.total;
+          onProgress(file, {
+              uploaded: uploaded,
+              total: total,
+              percent: total > 0 ? uploaded / total : 0
+          });
+      }
+  };
+  Supload.prototype.onSuccess = function onSuccess (data) {
+      var ref = this.hooks;
+          var onSuccess = ref.onSuccess;
+      if (onSuccess) {
+          onSuccess(data.file, data.responseText);
+      }
+  };
+  Supload.prototype.onDebug = function onDebug (data) {
+      if (this.debug) {
+          console.log(data.text);
+      }
+  };
+  Supload.instances = {};
+  /**
+   * 文件状态 - 等待上传
+   */
+  Supload.STATUS_WAITING = 0;
+  /**
+   * 文件状态 - 正在上传
+   */
+  Supload.STATUS_UPLOADING = 1;
+  /**
+   * 文件状态 - 上传成功
+   */
+  Supload.STATUS_UPLOAD_SUCCESS = 2;
+  /**
+   * 文件状态 - 上传失败
+   */
+  Supload.STATUS_UPLOAD_ERROR = 3;
+  /**
+   * 错误码 - 上传中止
+   */
+  Supload.ERROR_ABORT = 0;
+  /**
+   * 错误码 - 上传出现沙箱安全错误
+   */
+  Supload.ERROR_SECURITY = 1;
+  /**
+   * 错误码 - 上传 IO 错误
+   */
+  Supload.ERROR_IO = 2;
+  /**
+   * 项目名称 AS 会用 projectName.instances[movieName] 找出当前实例
+   */
+  var projectName = 'Supload';
+  /**
+   * 暴露给全局的对象，这样 AS 才能调到
+   */
+  window[projectName] = Supload;
+  /**
+   * guid 初始值
+   */
+  var guid = 0;
+  /**
+   * 创建新的唯一的影片剪辑名称
+   */
+  function createMovieName() {
+      return '_supload_' + (guid++);
+  }
+  /**
+   * 创建 swf 元素
+   *
+   * 无需兼容 IE67 用现有方法即可
+   *
+   * 如果想兼容 IE67，有两种方法：
+   *
+   * 1. 把 wmode 改成 opaque
+   * 2. 用 swfobject 或别的库重写此方法
+   *
+   * 这里不兼容 IE67 是因为要判断浏览器实在太蛋疼了。。。
+   */
+  function createSWF(id, swfUrl, flashVars) {
+      var div = document.createElement('div');
+      // 不加 ID 在 IE 下没法运行
+      div.innerHTML = '<object id="' + id + '" class="' + projectName.toLowerCase()
+          + '" type="application/x-shockwave-flash" data="' + swfUrl + '">'
+          + '<param name="movie" value="' + swfUrl + '" />'
+          + '<param name="allowscriptaccess" value="always" />'
+          + '<param name="wmode" value="transparent" />'
+          + '<param name="flashvars" value="' + flashVars + '" />'
+          + '</object>';
+      return div.children[0];
+  }
+  /**
+   * 拼装给 swf 用的参数
+   */
+  function createFlashVars(movieName, accept, multiple) {
+      var result = [
+          'projectName=' + projectName,
+          'movieName=' + movieName,
+          'accept=' + encodeURIComponent(accept),
+          'multiple=' + (multiple ? 'true' : 'false')
+      ];
+      return result.join('&amp;');
+  }
+
   exports.AjaxUploader = AjaxUploader;
+  exports.Supload = Supload;
   exports.fetch = fetch;
 
   Object.defineProperty(exports, '__esModule', { value: true });
