@@ -5,5 +5,5 @@ import FlashUploader from './FlashUploader'
 export {
   fetch,
   AjaxUploader,
-  FlashUploader,
+  FlashUploader
 }

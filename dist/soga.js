@@ -1,6 +1,6 @@
 /**
- * soga.js v0.1.0
- * (c) 2019-2019 musicode
+ * soga.js v0.1.1
+ * (c) 2019
  * Released under the MIT License.
  */
 

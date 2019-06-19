@@ -140,6 +140,20 @@ ajaxUploader.destroy()
 
 这个流程是 Flash 插件必需的，无法逃避，也就是说，你无法像 `AjaxUploader` 那样传入一个 `file` 对象，因为所有选中的文件都被 `Flash` 管理着，你无法手动设置，只能通过 `getFiles()` 方法获取。
 
+`Flash` 返回的文件格式如下：
+
+```js
+{
+  index: number,  // 在文件列表中的索引
+  status: number, // 文件当前的状态，枚举值来自 FlashUploader.STATUS_XX
+  name: string,
+  size: number,
+  type: string    // 文件类型，注意，它不是 mimeType，而是 png 或 jpg 这样的后缀名
+}
+```
+
+下面看一个完整的例子：
+
 ```js
 import { FlashUploader } from 'soga'
 

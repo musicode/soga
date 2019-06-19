@@ -15,7 +15,7 @@ import { name, version, author, license } from '../package.json'
 
 const banner =
   `${'/**\n' + ' * '}${name}.js v${version}\n` +
-  ` * (c) 2019-${new Date().getFullYear()} ${author}\n` +
+  ` * (c) 2019\n` +
   ` * Released under the ${license} License.\n` +
   ` */\n`;
 
