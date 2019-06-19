@@ -4,11 +4,12 @@ import setRequestHeaders from './function/setRequestHeaders'
 
 const blobSlice = File.prototype['mozSlice'] || File.prototype['webkitSlice'] || File.prototype.slice
 
-export default class AjaxUploader implements type.Uploader {
+export default class AjaxUploader {
 
   xhr: XMLHttpRequest
 
-  file: File
+  file: File | Blob
+
   fileSize: number
 
   hooks: type.UploadHooks
@@ -17,10 +18,10 @@ export default class AjaxUploader implements type.Uploader {
 
   public static support() {
     const xhr = new XMLHttpRequest()
-    return xhr && 'upload' in xhr && 'onprogress' in xhr.upload
+    return 'upload' in xhr && 'onprogress' in xhr.upload
   }
 
-  constructor(file: File, hooks: type.UploadHooks) {
+  constructor(file: File | Blob, hooks: type.UploadHooks) {
 
     const instance = this
 

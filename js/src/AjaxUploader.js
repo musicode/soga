@@ -4,7 +4,7 @@ const blobSlice = File.prototype['mozSlice'] || File.prototype['webkitSlice'] ||
 export default class AjaxUploader {
     static support() {
         const xhr = new XMLHttpRequest();
-        return xhr && 'upload' in xhr && 'onprogress' in xhr.upload;
+        return 'upload' in xhr && 'onprogress' in xhr.upload;
     }
     constructor(file, hooks) {
         const instance = this;

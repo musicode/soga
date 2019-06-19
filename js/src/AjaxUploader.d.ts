@@ -1,12 +1,12 @@
 import * as type from './type';
-export default class AjaxUploader implements type.Uploader {
+export default class AjaxUploader {
     xhr: XMLHttpRequest;
-    file: File;
+    file: File | Blob;
     fileSize: number;
     hooks: type.UploadHooks;
     chunkInfo?: type.ChunkInfo;
     static support(): boolean;
-    constructor(file: File, hooks: type.UploadHooks);
+    constructor(file: File | Blob, hooks: type.UploadHooks);
     /**
      * 上传整个文件
      */

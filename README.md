@@ -28,7 +28,7 @@ yarn add soga
 
 ## Fetch
 
-标准 [Fetch](https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch) 函数的简化版，为了兼容 IE8，仅支持 `method`, `body`, `credentials`, `headers` 等几个配置项。
+标准 [Fetch](https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch) 函数的简化版，为了兼容 IE8，仅支持 `method`, `body`, `credentials`, `headers` 等四个配置项。
 
 ```js
 import { fetch } from 'soga'
@@ -50,6 +50,7 @@ fetch(
       'user-agent': 'Mozilla/4.0 MDN Example',
       'content-type': 'application/json'
     },
+    // 可选，默认是 GET
     method: 'POST'
   }
 )
@@ -72,6 +73,7 @@ if (!AjaxUploader.support()) {
 
 const ajaxUploader = new AjaxUploader(
   // 传入 <input type="file"> 选择的文件
+  // 也可以传入 Blob 对象，比如图片裁剪后通过 dataURItoBlob() 获得的 Blob
   file,
   // 钩子配置，可选
   {

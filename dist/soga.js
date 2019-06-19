@@ -1,5 +1,5 @@
 /**
- * soga.js v0.0.9
+ * soga.js v0.1.0
  * (c) 2019-2019 musicode
  * Released under the MIT License.
  */
@@ -185,7 +185,7 @@
    */
   AjaxUploader.support = function support () {
       var xhr = new XMLHttpRequest();
-      return xhr && 'upload' in xhr && 'onprogress' in xhr.upload;
+      return 'upload' in xhr && 'onprogress' in xhr.upload;
   };
 
   AjaxUploader.prototype.upload = function upload (options) {

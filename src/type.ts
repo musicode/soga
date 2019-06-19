@@ -15,6 +15,13 @@ export interface Response {
   clone(): Response
 }
 
+export interface FetchOptions {
+  body?: BodyInit | null
+  credentials?: RequestCredentials
+  headers?: HeadersInit
+  method?: string
+}
+
 export interface UploadOptions {
   data?: Record<string, any>
   headers?: HeadersInit
@@ -65,13 +72,3 @@ export interface UploadHooks {
   onChunkSuccess?: (success: UploadChunkSuccess) => void
 }
 
-export interface Uploader {
-
-  file: File
-  fileSize: number
-
-  hooks: UploadHooks
-
-  upload(options: UploadOptions): void
-
-}
