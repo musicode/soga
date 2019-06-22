@@ -1,8 +1,14 @@
-import * as type from './type'
+import {
+  UploadOptions,
+  UploadChunkOptions,
+  UploadHooks,
+  ChunkInfo,
+} from './type'
+
 import parseResponse from './function/parseResponse'
 import setRequestHeaders from './function/setRequestHeaders'
 
-const blobSlice = File.prototype['mozSlice'] || File.prototype['webkitSlice'] || File.prototype.slice
+const blobSlice = File.prototype.slice || File.prototype['webkitSlice'] || File.prototype['mozSlice']
 
 export default class AjaxUploader {
 
@@ -12,16 +18,16 @@ export default class AjaxUploader {
 
   fileSize: number
 
-  hooks: type.UploadHooks
+  hooks: UploadHooks
 
-  chunkInfo?: type.ChunkInfo
+  chunkInfo?: ChunkInfo
 
   public static support() {
     const xhr = new XMLHttpRequest()
     return 'upload' in xhr && 'onprogress' in xhr.upload
   }
 
-  constructor(file: File | Blob, hooks: type.UploadHooks) {
+  constructor(file: File | Blob, hooks: UploadHooks) {
 
     const instance = this
 
@@ -132,7 +138,7 @@ export default class AjaxUploader {
   /**
    * 上传整个文件
    */
-  upload(options: type.UploadOptions) {
+  upload(options: UploadOptions) {
 
     const { xhr, file } = this
 
@@ -155,7 +161,7 @@ export default class AjaxUploader {
   /**
    * 上传文件分片
    */
-  uploadChunk(options: type.UploadChunkOptions) {
+  uploadChunk(options: UploadChunkOptions) {
 
     let { xhr, file, fileSize, chunkInfo } = this
 
@@ -174,7 +180,7 @@ export default class AjaxUploader {
     const chunkIndex = options.chunkIndex || 0
 
     // 默认一个分片为 4M
-    const chunkSize = options.chunkSize || 4 * 1024 * 1024
+    const chunkSize = options.chunkSize || (4 * 1024 * 1024)
 
     const start = chunkSize * chunkIndex
     const end = Math.min(fileSize, chunkSize * (chunkIndex + 1))

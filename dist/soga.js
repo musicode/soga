@@ -1,5 +1,5 @@
 /**
- * soga.js v0.1.1
+ * soga.js v0.1.2
  * (c) 2019
  * Released under the MIT License.
  */
@@ -90,7 +90,7 @@
       });
   }
 
-  var blobSlice = File.prototype['mozSlice'] || File.prototype['webkitSlice'] || File.prototype.slice;
+  var blobSlice = File.prototype.slice || File.prototype['webkitSlice'] || File.prototype['mozSlice'];
   var AjaxUploader = function AjaxUploader(file, hooks) {
       var instance = this;
       instance.file = file;
@@ -223,7 +223,7 @@
       // 默认从第一个分片开始上传，断点续传可以传入指定的分片
       var chunkIndex = options.chunkIndex || 0;
       // 默认一个分片为 4M
-      var chunkSize = options.chunkSize || 4 * 1024 * 1024;
+      var chunkSize = options.chunkSize || (4 * 1024 * 1024);
       var start = chunkSize * chunkIndex;
       var end = Math.min(fileSize, chunkSize * (chunkIndex + 1));
       chunkInfo.uploading = end - start;

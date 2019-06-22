@@ -1,8 +1,11 @@
-import * as type from './type'
+import {
+  FetchOptions,
+} from './type'
+
 import parseResponse from './function/parseResponse'
 import setRequestHeaders from './function/setRequestHeaders'
 
-export default function (url: string, options: type.FetchOptions = {}) {
+export default function (url: string, options: FetchOptions = {}) {
   return new Promise(function (resolve, reject) {
 
     const xhr = new XMLHttpRequest()

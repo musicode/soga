@@ -59,7 +59,7 @@ export default function (env, minify = false, port = 0) {
 
   return [
     {
-      input: 'src/soga.ts',
+      input: 'index.ts',
       output: [
         {
           file: `dist/${fileName}.js`,

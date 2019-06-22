@@ -1,9 +1,9 @@
 {
   "name": "soga",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A request library",
   "main": "dist/soga.js",
-  "types": "js/src/soga.d.ts",
+  "types": "dist/soga.d.ts",
   "directories": {
     "example": "example",
     "test": "test"
@@ -11,7 +11,8 @@
   "scripts": {
     "doc": "docsify serve docs",
     "dev": "node_modules/.bin/rollup -c ./build/config.dev.js",
-    "prod": "node_modules/.bin/rollup -c ./build/config.prod.js"
+    "prod": "node_modules/.bin/rollup -c ./build/config.prod.js",
+    "dts": "./node_modules/.bin/dts-bundle-generator -o dist/soga.d.ts js/index.d.ts"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
     "rollup-plugin-terser": "^5.0.0",
     "rollup-plugin-typescript": "^1.0.1",
     "tslib": "^1.10.0",
-    "typescript": "^3.5.2"
+    "typescript": "^3.5.2",
+    "dts-bundle-generator": "^3.1.0"
   }
 }

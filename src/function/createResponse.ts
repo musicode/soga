@@ -1,10 +1,12 @@
-import * as type from '../type'
+import {
+  Response,
+} from '../type'
 
 export default function (
   xhr: XMLHttpRequest,
   headers: Record<string, string>
 ) {
-  function response(): type.Response {
+  function response(): Response {
     return {
       ok: xhr.status >= 200 && xhr.status < 300,
       statusText: xhr.statusText || 'OK',

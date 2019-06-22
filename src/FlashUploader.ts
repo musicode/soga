@@ -1,4 +1,7 @@
-import * as type from './type'
+import {
+  UploadOptions,
+  UploadProgress,
+} from './type'
 
 interface IndexedFile {
   index: number
@@ -53,7 +56,7 @@ interface FlashUploaderHooks {
   onEnd?: (file: IndexedFile) => void
   onError?: (file: IndexedFile, code: number, detail: Object | void) => void
   onAbort?: (file: IndexedFile) => void
-  onProgress?: (file: IndexedFile, progress: type.UploadProgress) => void
+  onProgress?: (file: IndexedFile, progress: UploadProgress) => void
   onSuccess?: (file: IndexedFile, responseText: string) => void
 }
 
@@ -141,7 +144,7 @@ export default class FlashUploader {
   /**
    * 上传
    */
-  upload(index: number, options: type.UploadOptions) {
+  upload(index: number, options: UploadOptions) {
     this.swf['upload'](index, options.action, options.fileName, options.data, options.headers)
   }
 
