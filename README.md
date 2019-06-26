@@ -30,6 +30,7 @@ yarn add soga
 
 标准 [Fetch](https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch) 函数的简化版，为了兼容 IE8，仅支持 `method`, `body`, `credentials`, `headers` 等四个配置项。
 
+
 ```js
 import { fetch } from 'soga'
 
@@ -57,6 +58,14 @@ fetch(
 .then(function (response) {
   return response.json()
 })
+```
+
+`fetch` 函数依赖 `Promise`，因此必须给 IE 打补丁，如下：
+
+```html
+<!--[if IE]>
+<script src="https://cdn.bootcss.com/es6-promise/4.1.1/es6-promise.auto.min.js"></script>
+<![endif]-->
 ```
 
 ## Ajax Uploader
