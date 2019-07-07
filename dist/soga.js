@@ -1,5 +1,5 @@
 /**
- * soga.js v0.1.2
+ * soga.js v0.1.3
  * (c) 2019
  * Released under the MIT License.
  */
@@ -193,6 +193,12 @@
           var xhr = ref.xhr;
           var file = ref.file;
       xhr.open('post', options.action, true);
+      if (options.credentials === 'include') {
+          xhr.withCredentials = true;
+      }
+      else if (options.credentials === 'omit') {
+          xhr.withCredentials = false;
+      }
       var formData = new FormData();
       for (var key in options.data) {
           formData.append(key, options.data[key]);

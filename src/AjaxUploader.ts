@@ -144,6 +144,13 @@ export default class AjaxUploader {
 
     xhr.open('post', options.action, true)
 
+    if (options.credentials === 'include') {
+      xhr.withCredentials = true
+    }
+    else if (options.credentials === 'omit') {
+      xhr.withCredentials = false
+    }
+
     const formData = new FormData()
 
     for (let key in options.data) {

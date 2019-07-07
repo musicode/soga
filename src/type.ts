@@ -24,6 +24,7 @@ export interface FetchOptions {
 
 export interface UploadOptions {
   data?: Record<string, any>
+  credentials?: RequestCredentials
   headers?: HeadersInit
   fileName: string
   action: string

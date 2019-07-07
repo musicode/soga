@@ -124,6 +124,9 @@ ajaxUploader.upload({
   action: 'http://xxx.com/upload',
   // 跟后端约定的文件名
   fileName: 'file',
+  // 跨域是否发送 cookie
+  // 可选值：include（发送）, omit（不发送）, same-origin（默认，同源发送）
+  credentials: 'same-origin',
   // 跟随文件上传的其他数据，可选
   data: {
 
