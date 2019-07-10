@@ -61,7 +61,7 @@ export interface UploadHooks {
 	onChunkProgress?: (progress: UploadChunkProgress) => void;
 	onChunkSuccess?: (success: UploadChunkSuccess) => void;
 }
-export function fetch(url: string, options?: FetchOptions): Promise<unknown>;
+export function fetch(url: string, options?: FetchOptions): Promise<Response>;
 export declare class AjaxUploader {
 	xhr: XMLHttpRequest;
 	file: File | Blob;

@@ -1,5 +1,5 @@
 /**
- * soga.js v0.1.4
+ * soga.js v0.1.5
  * (c) 2017-2019 musicode
  * Released under the MIT License.
  */

@@ -1,6 +1,6 @@
 {
   "name": "soga",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A request library",
   "main": "dist/soga.js",
   "module": "dist/soga.esm.js",
