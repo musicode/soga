@@ -1,6 +1,6 @@
 /**
- * soga.js v0.1.3
- * (c) 2019
+ * soga.js v0.1.4
+ * (c) 2017-2019 musicode
  * Released under the MIT License.
  */
 
@@ -57,7 +57,7 @@
       }
   }
 
-  function fetch (url, options) {
+  function fetch(url, options) {
       if ( options === void 0 ) options = {};
 
       return new Promise(function (resolve, reject) {

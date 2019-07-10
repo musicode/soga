@@ -13,8 +13,15 @@ export interface Response {
 	text(): string;
 	clone(): Response;
 }
+export interface FetchOptions {
+	body?: BodyInit | null;
+	credentials?: RequestCredentials;
+	headers?: HeadersInit;
+	method?: string;
+}
 export interface UploadOptions {
 	data?: Record<string, any>;
+	credentials?: RequestCredentials;
 	headers?: HeadersInit;
 	fileName: string;
 	action: string;
@@ -54,6 +61,7 @@ export interface UploadHooks {
 	onChunkProgress?: (progress: UploadChunkProgress) => void;
 	onChunkSuccess?: (success: UploadChunkSuccess) => void;
 }
+export function fetch(url: string, options?: FetchOptions): Promise<unknown>;
 export declare class AjaxUploader {
 	xhr: XMLHttpRequest;
 	file: File | Blob;
