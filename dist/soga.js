@@ -1,5 +1,5 @@
 /**
- * soga.js v0.1.6
+ * soga.js v0.1.7
  * (c) 2017-2019 musicode
  * Released under the MIT License.
  */
@@ -57,20 +57,32 @@
       }
   }
 
+  function stringifyValue(value) {
+      var type = typeof value;
+      if (type === 'string') {
+          return encodeURIComponent(value);
+      }
+      else if (type !== 'undefined') {
+          return '' + value;
+      }
+  }
   function stringifyQuery (data) {
       var list = [];
       for (var key in data) {
           var value = data[key];
           if (Array.isArray(value)) {
               for (var i = 0, len = value.length; i < len; i++) {
-                  list.push(key + '[]=' + encodeURIComponent(value[i]));
+                  var item = stringifyValue(value[i]);
+                  if (typeof item === 'string') {
+                      list.push(key + '[]=' + item);
+                  }
               }
           }
-          else if (typeof value === 'string') {
-              list.push(key + '=' + encodeURIComponent(value));
-          }
-          else if (typeof value !== 'undefined') {
-              list.push(key + '=' + value);
+          else {
+              value = stringifyValue(value);
+              if (typeof value === 'string') {
+                  list.push(key + '=' + value);
+              }
           }
       }
       return list.join('&');

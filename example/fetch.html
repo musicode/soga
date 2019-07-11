@@ -27,14 +27,16 @@
       fetch(
         '/test',
         {
-          method: 'post',
+          method: 'get',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
           },
           data: {
-            name: 'soga',
+            name: 'so&*)_+=ga',
             age: 10,
-            tags: [1,2,3]
+            a: null,
+            b: undefined,
+            tags: [1,2,,3]
           }
         }
       )
