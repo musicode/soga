@@ -5,13 +5,32 @@ import {
 
 import parseResponse from './function/parseResponse'
 import setRequestHeaders from './function/setRequestHeaders'
+import stringifyQuery from './function/stringifyQuery'
 
 export default function fetch(url: string, options: FetchOptions = {}): Promise<Response> {
   return new Promise(function (resolve, reject) {
 
     const xhr = new XMLHttpRequest()
 
-    xhr.open(options.method || 'get', url, true)
+    const method = options.method
+      ? options.method.toLowerCase()
+      : 'get'
+
+    let data = options.body || null
+
+    if (options.data) {
+      let query = stringifyQuery(options.data)
+      if (query) {
+        if (method === 'get') {
+          url += '?' + query
+        }
+        else if (!data) {
+          data = query
+        }
+      }
+    }
+
+    xhr.open(method, url, true)
 
     xhr.onload = function () {
       const response = parseResponse(xhr)
@@ -40,7 +59,7 @@ export default function fetch(url: string, options: FetchOptions = {}): Promise<
 
     setRequestHeaders(xhr, options.headers)
 
-    xhr.send(options.body || null)
+    xhr.send(data)
 
   })
 }

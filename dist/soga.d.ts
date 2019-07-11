@@ -14,6 +14,7 @@ export interface Response {
 	clone(): Response;
 }
 export interface FetchOptions {
+	data?: Record<string, any>;
 	body?: BodyInit | null;
 	credentials?: RequestCredentials;
 	headers?: HeadersInit;

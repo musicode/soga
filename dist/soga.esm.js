@@ -1,5 +1,5 @@
 /**
- * soga.js v0.1.5
+ * soga.js v0.1.6
  * (c) 2017-2019 musicode
  * Released under the MIT License.
  */
@@ -51,10 +51,44 @@ function setRequestHeaders (xhr, headers) {
     }
 }
 
+function stringifyQuery (data) {
+    const list = [];
+    for (let key in data) {
+        let value = data[key];
+        if (Array.isArray(value)) {
+            for (let i = 0, len = value.length; i < len; i++) {
+                list.push(key + '[]=' + encodeURIComponent(value[i]));
+            }
+        }
+        else if (typeof value === 'string') {
+            list.push(key + '=' + encodeURIComponent(value));
+        }
+        else if (typeof value !== 'undefined') {
+            list.push(key + '=' + value);
+        }
+    }
+    return list.join('&');
+}
+
 function fetch(url, options = {}) {
     return new Promise(function (resolve, reject) {
         const xhr = new XMLHttpRequest();
-        xhr.open(options.method || 'get', url, true);
+        const method = options.method
+            ? options.method.toLowerCase()
+            : 'get';
+        let data = options.body || null;
+        if (options.data) {
+            let query = stringifyQuery(options.data);
+            if (query) {
+                if (method === 'get') {
+                    url += '?' + query;
+                }
+                else if (!data) {
+                    data = query;
+                }
+            }
+        }
+        xhr.open(method, url, true);
         xhr.onload = function () {
             const response = parseResponse(xhr);
             resolve(response());
@@ -78,7 +112,7 @@ function fetch(url, options = {}) {
             xhr.withCredentials = false;
         }
         setRequestHeaders(xhr, options.headers);
-        xhr.send(options.body || null);
+        xhr.send(data);
     });
 }
 

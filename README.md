@@ -28,7 +28,7 @@ yarn add soga
 
 ## Fetch
 
-标准 [Fetch](https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch) 函数的简化版，为了兼容 IE8，仅支持 `method`, `body`, `credentials`, `headers` 等四个配置项。
+标准 [Fetch](https://developer.mozilla.org/zh-CN/docs/Web/API/Fetch_API/Using_Fetch) 函数的简化版，为了兼容 IE8，仅支持 `method`, `data`, `body`, `credentials`, `headers` 等五个配置项。
 
 
 ```js
@@ -43,6 +43,12 @@ fetch(
       username: '',
       password: ''
     }),
+    // 直接使用 body 可能比较麻烦，因此提供了一个扩展字段
+    // data 可以把对象序列化成查询参数，即 username=xx&password=yy 的格式
+    data: {
+      username: '',
+      password: ''
+    },
     // 跨域是否发送 cookie
     // 可选值：include（发送）, omit（不发送）, same-origin（默认，同源发送）
     credentials: 'same-origin',
@@ -60,11 +66,15 @@ fetch(
 })
 ```
 
-`fetch` 函数依赖 `Promise`，因此必须给 IE 打补丁，如下：
+`fetch` 函数依赖 `Promise` 和 `Array.isArray`，因此必须给 IE 打补丁，如下：
 
 ```html
 <!--[if IE]>
 <script src="https://cdn.bootcss.com/es6-promise/4.1.1/es6-promise.auto.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+<script src="https://cdn.bootcss.com/es5-shim/4.5.13/es5-shim.min.js"></script>
 <![endif]-->
 ```
 

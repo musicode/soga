@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <button onclick="post()">
+    post
+  </button>
+
+  <button onclick="post1()">
+    post1
+  </button>
+
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+  <script src="../dist/soga.js"></script>
+  <script>
+    var fetch = Soga.fetch
+
+    function post() {
+      fetch(
+        '/test',
+        {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+          },
+          data: {
+            name: 'soga',
+            age: 10,
+            tags: [1,2,3]
+          }
+        }
+      )
+    }
+
+    function post1() {
+      $.ajax({
+        url: '/test',
+        data: {
+          app_version: '2.0.0'
+        },
+        method: 'post'
+      })
+    }
+  </script>
+</body>
+
+</html>
