@@ -75,6 +75,7 @@ fetch(
 
 <!--[if lt IE 9]>
 <script src="https://cdn.bootcss.com/es5-shim/4.5.13/es5-shim.min.js"></script>
+<script src="https://cdn.bootcss.com/es5-shim/4.5.13/es5-sham.min.js"></script>
 <![endif]-->
 ```
 
