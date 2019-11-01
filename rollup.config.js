@@ -58,7 +58,9 @@ if (process.env.NODE_FORMAT === 'es') {
 else {
   plugins.push(
     typescript(),
-    buble()
+    buble({
+      namedFunctionExpressions: false
+    })
   )
   output.push({
     file: `dist/${name}${suffix}`,

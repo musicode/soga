@@ -8,8 +8,6 @@ import {
 import parseResponse from './function/parseResponse'
 import setRequestHeaders from './function/setRequestHeaders'
 
-const blobSlice = File.prototype.slice || File.prototype['webkitSlice'] || File.prototype['mozSlice']
-
 export default class AjaxUploader {
 
   xhr: XMLHttpRequest
@@ -210,6 +208,7 @@ export default class AjaxUploader {
 
     setRequestHeaders(xhr, headers)
 
+    const blobSlice = File.prototype.slice || File.prototype['webkitSlice'] || File.prototype['mozSlice']
     xhr.send(blobSlice.call(file, start, end))
 
   }

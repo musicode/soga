@@ -1,5 +1,5 @@
 /**
- * soga.js v0.1.7
+ * soga.js v0.1.8
  * (c) 2017-2019 musicode
  * Released under the MIT License.
  */
@@ -18,21 +18,21 @@
               status: xhr.status || 200,
               url: xhr.responseURL || headers['x-request-url'] || '',
               headers: {
-                  get: function get(name) {
+                  get: function(name) {
                       return headers[name.toLowerCase()];
                   },
-                  has: function has(name) {
+                  has: function(name) {
                       return name.toLowerCase() in headers;
                   }
               },
               body: xhr.response || xhr.responseText,
-              text: function text() {
+              text: function() {
                   return xhr.responseText;
               },
-              json: function json() {
+              json: function() {
                   return JSON.parse(xhr.responseText);
               },
-              blob: function blob() {
+              blob: function() {
                   return new Blob([xhr.response]);
               },
               clone: response,
@@ -136,8 +136,7 @@
       });
   }
 
-  var blobSlice = File.prototype.slice || File.prototype['webkitSlice'] || File.prototype['mozSlice'];
-  var AjaxUploader = function AjaxUploader(file, hooks) {
+  var AjaxUploader = function(file, hooks) {
       var instance = this;
       instance.file = file;
       instance.hooks = hooks;
@@ -229,12 +228,12 @@
   /**
    * 上传整个文件
    */
-  AjaxUploader.support = function support () {
+  AjaxUploader.support = function () {
       var xhr = new XMLHttpRequest();
       return 'upload' in xhr && 'onprogress' in xhr.upload;
   };
 
-  AjaxUploader.prototype.upload = function upload (options) {
+  AjaxUploader.prototype.upload = function (options) {
       var ref = this;
           var xhr = ref.xhr;
           var file = ref.file;
@@ -256,7 +255,7 @@
   /**
    * 上传文件分片
    */
-  AjaxUploader.prototype.uploadChunk = function uploadChunk (options) {
+  AjaxUploader.prototype.uploadChunk = function (options) {
       var ref = this;
           var xhr = ref.xhr;
           var file = ref.file;
@@ -290,22 +289,23 @@
           headers[key] = options.headers[key];
       }
       setRequestHeaders(xhr, headers);
+      var blobSlice = File.prototype.slice || File.prototype['webkitSlice'] || File.prototype['mozSlice'];
       xhr.send(blobSlice.call(file, start, end));
   };
   /**
    * 取消上传
    */
-  AjaxUploader.prototype.abort = function abort () {
+  AjaxUploader.prototype.abort = function () {
       this.xhr.abort();
   };
   /**
    * 销毁
    */
-  AjaxUploader.prototype.destroy = function destroy () {
+  AjaxUploader.prototype.destroy = function () {
       this.abort();
   };
 
-  var FlashUploader = function FlashUploader(options, hooks) {
+  var FlashUploader = function(options, hooks) {
       if ( hooks === void 0 ) hooks = {};
 
       var movieName = createMovieName();
@@ -326,37 +326,37 @@
   /**
    * 获得要上传的文件
    */
-  FlashUploader.prototype.getFiles = function getFiles () {
+  FlashUploader.prototype.getFiles = function () {
       return this.swf['getFiles']();
   };
   /**
    * 上传
    */
-  FlashUploader.prototype.upload = function upload (index, options) {
+  FlashUploader.prototype.upload = function (index, options) {
       this.swf['upload'](index, options.action, options.fileName, options.data, options.headers);
   };
   /**
    * 取消上传
    */
-  FlashUploader.prototype.abort = function abort (index) {
+  FlashUploader.prototype.abort = function (index) {
       this.swf['abort'](index);
   };
   /**
    * 启用鼠标点击打开文件选择窗口
    */
-  FlashUploader.prototype.enable = function enable () {
+  FlashUploader.prototype.enable = function () {
       this.swf['enable']();
   };
   /**
    * 禁用鼠标点击打开文件选择窗口
    */
-  FlashUploader.prototype.disable = function disable () {
+  FlashUploader.prototype.disable = function () {
       this.swf['disable']();
   };
   /**
    * 销毁对象
    */
-  FlashUploader.prototype.destroy = function destroy () {
+  FlashUploader.prototype.destroy = function () {
       var files = this.getFiles();
       for (var i = 0, len = files.length; i < len; i++) {
           this.abort(files[i].index);
@@ -366,7 +366,7 @@
       // 清除 IE 引用
       window[this.movieName] = null;
   };
-  FlashUploader.prototype.onReady = function onReady () {
+  FlashUploader.prototype.onReady = function () {
       // swf 文件初始化成功
       var ref = this.hooks;
           var onReady = ref.onReady;
@@ -374,7 +374,7 @@
           onReady();
       }
   };
-  FlashUploader.prototype.onFileChange = function onFileChange () {
+  FlashUploader.prototype.onFileChange = function () {
       // 用户选择文件
       var ref = this.hooks;
           var onFileChange = ref.onFileChange;
@@ -382,35 +382,35 @@
           onFileChange();
       }
   };
-  FlashUploader.prototype.onStart = function onStart (data) {
+  FlashUploader.prototype.onStart = function (data) {
       var ref = this.hooks;
           var onStart = ref.onStart;
       if (onStart) {
           onStart(data.file);
       }
   };
-  FlashUploader.prototype.onEnd = function onEnd (data) {
+  FlashUploader.prototype.onEnd = function (data) {
       var ref = this.hooks;
           var onEnd = ref.onEnd;
       if (onEnd) {
           onEnd(data.file);
       }
   };
-  FlashUploader.prototype.onError = function onError (data) {
+  FlashUploader.prototype.onError = function (data) {
       var ref = this.hooks;
           var onError = ref.onError;
       if (onError) {
           onError(data.file, data.code, data.detail);
       }
   };
-  FlashUploader.prototype.onAbort = function onAbort (data) {
+  FlashUploader.prototype.onAbort = function (data) {
       var ref = this.hooks;
           var onAbort = ref.onAbort;
       if (onAbort) {
           onAbort(data.file);
       }
   };
-  FlashUploader.prototype.onProgress = function onProgress (data) {
+  FlashUploader.prototype.onProgress = function (data) {
       var ref = this.hooks;
           var onProgress = ref.onProgress;
       if (onProgress) {
@@ -424,14 +424,14 @@
           });
       }
   };
-  FlashUploader.prototype.onSuccess = function onSuccess (data) {
+  FlashUploader.prototype.onSuccess = function (data) {
       var ref = this.hooks;
           var onSuccess = ref.onSuccess;
       if (onSuccess) {
           onSuccess(data.file, data.responseText);
       }
   };
-  FlashUploader.prototype.onDebug = function onDebug (data) {
+  FlashUploader.prototype.onDebug = function (data) {
       if (this.debug) {
           console.log(data.text);
       }

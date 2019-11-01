@@ -1,5 +1,5 @@
 /**
- * soga.js v0.1.7
+ * soga.js v0.1.8
  * (c) 2017-2019 musicode
  * Released under the MIT License.
  */
@@ -128,7 +128,6 @@ function fetch(url, options = {}) {
     });
 }
 
-const blobSlice = File.prototype.slice || File.prototype['webkitSlice'] || File.prototype['mozSlice'];
 class AjaxUploader {
     static support() {
         const xhr = new XMLHttpRequest();
@@ -274,6 +273,7 @@ class AjaxUploader {
             headers[key] = options.headers[key];
         }
         setRequestHeaders(xhr, headers);
+        const blobSlice = File.prototype.slice || File.prototype['webkitSlice'] || File.prototype['mozSlice'];
         xhr.send(blobSlice.call(file, start, end));
     }
     /**
