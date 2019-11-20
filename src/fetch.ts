@@ -16,8 +16,10 @@ export default function fetch(url: string, options: FetchOptions = {}): Promise<
       ? options.method.toLowerCase()
       : 'get'
 
+    let headers = options.headers
     let data = options.body || null
 
+    // 提供一个便利参数
     if (options.data) {
       let query = stringifyQuery(options.data)
       if (query) {
@@ -26,6 +28,12 @@ export default function fetch(url: string, options: FetchOptions = {}): Promise<
         }
         else if (!data) {
           data = query
+          // 如果指定了 headers，可以理解为用户知道自己在干嘛
+          if (!headers) {
+            headers = {
+              'content-type': 'application/x-www-form-urlencoded'
+            }
+          }
         }
       }
     }
@@ -57,7 +65,7 @@ export default function fetch(url: string, options: FetchOptions = {}): Promise<
       xhr.withCredentials = false
     }
 
-    setRequestHeaders(xhr, options.headers)
+    setRequestHeaders(xhr, headers)
 
     xhr.send(data)
 

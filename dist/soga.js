@@ -1,5 +1,5 @@
 /**
- * soga.js v0.1.8
+ * soga.js v0.1.9
  * (c) 2017-2019 musicode
  * Released under the MIT License.
  */
@@ -96,7 +96,9 @@
           var method = options.method
               ? options.method.toLowerCase()
               : 'get';
+          var headers = options.headers;
           var data = options.body || null;
+          // 提供一个便利参数
           if (options.data) {
               var query = stringifyQuery(options.data);
               if (query) {
@@ -105,6 +107,12 @@
                   }
                   else if (!data) {
                       data = query;
+                      // 如果指定了 headers，可以理解为用户知道自己在干嘛
+                      if (!headers) {
+                          headers = {
+                              'content-type': 'application/x-www-form-urlencoded'
+                          };
+                      }
                   }
               }
           }
@@ -131,7 +139,7 @@
           else if (options.credentials === 'omit') {
               xhr.withCredentials = false;
           }
-          setRequestHeaders(xhr, options.headers);
+          setRequestHeaders(xhr, headers);
           xhr.send(data);
       });
   }
