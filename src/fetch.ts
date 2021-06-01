@@ -21,18 +21,18 @@ export default function fetch(url: string, options: FetchOptions = {}): Promise<
 
     // 提供一个便利参数
     if (options.data) {
-      let query = stringifyQuery(options.data)
-      if (query) {
-        if (method === 'get') {
+      if (method === 'get') {
+        const query = stringifyQuery(options.data)
+        if (query) {
           url += '?' + query
         }
-        else if (!data) {
-          data = query
-          // 如果指定了 headers，可以理解为用户知道自己在干嘛
-          if (!headers) {
-            headers = {
-              'content-type': 'application/x-www-form-urlencoded'
-            }
+      }
+      else if (!data) {
+        data = JSON.stringify(options.data)
+        // 如果指定了 headers，可以理解为用户知道自己在干嘛
+        if (!headers) {
+          headers = {
+            'content-type': 'application/json'
           }
         }
       }

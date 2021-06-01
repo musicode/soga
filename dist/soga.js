@@ -1,6 +1,6 @@
 /**
- * soga.js v0.1.9
- * (c) 2017-2019 musicode
+ * soga.js v0.2.0
+ * (c) 2017-2021 musicode
  * Released under the MIT License.
  */
 
@@ -100,19 +100,19 @@
           var data = options.body || null;
           // 提供一个便利参数
           if (options.data) {
-              var query = stringifyQuery(options.data);
-              if (query) {
-                  if (method === 'get') {
+              if (method === 'get') {
+                  var query = stringifyQuery(options.data);
+                  if (query) {
                       url += '?' + query;
                   }
-                  else if (!data) {
-                      data = query;
-                      // 如果指定了 headers，可以理解为用户知道自己在干嘛
-                      if (!headers) {
-                          headers = {
-                              'content-type': 'application/x-www-form-urlencoded'
-                          };
-                      }
+              }
+              else if (!data) {
+                  data = JSON.stringify(options.data);
+                  // 如果指定了 headers，可以理解为用户知道自己在干嘛
+                  if (!headers) {
+                      headers = {
+                          'content-type': 'application/json'
+                      };
                   }
               }
           }
